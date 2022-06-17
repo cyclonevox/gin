@@ -7,7 +7,11 @@
 
 package binding
 
-import "net/http"
+import (
+	`net/http`
+
+	`github.com/go-playground/validator/v10`
+)
 
 // Content-Type MIME of the most common data formats.
 const (
@@ -63,6 +67,9 @@ type StructValidator interface {
 	// Engine returns the underlying validator engine which powers the
 	// StructValidator implementation.
 	Engine() any
+
+	// DDDD
+	Set(validator *validator.Validate)
 }
 
 // Validator is the default validator which implements the StructValidator

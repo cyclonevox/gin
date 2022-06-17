@@ -90,8 +90,11 @@ func (v *defaultValidator) Engine() any {
 }
 
 func (v *defaultValidator) lazyinit() {
-	v.once.Do(func() {
+	if v.validate == nil {
 		v.validate = validator.New()
-		v.validate.SetTagName("binding")
-	})
+	}
+}
+
+func (v *defaultValidator) Set(validator *validator.Validate) {
+	v.validate = validator
 }
