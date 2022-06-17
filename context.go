@@ -170,7 +170,9 @@ func (c *Context) FullPath() string {
 func (c *Context) Next() {
 	c.index++
 	for c.index < int8(len(c.handlers)) {
-		c.handlers[c.index](c)
+		if err := c.handlers[c.index](c); err != nil {
+			_ = c.Error(err)
+		}
 		c.index++
 	}
 }

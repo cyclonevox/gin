@@ -154,8 +154,9 @@ func (group *RouterGroup) Any(relativePath string, handlers ...HandlerFunc) IRou
 // StaticFile registers a single route in order to serve a single file of the local filesystem.
 // router.StaticFile("favicon.ico", "./resources/favicon.ico")
 func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes {
-	return group.staticFileHandler(relativePath, func(c *Context) {
+	return group.staticFileHandler(relativePath, func(c *Context) error {
 		c.File(filepath)
+		return nil
 	})
 }
 
@@ -163,8 +164,9 @@ func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes {
 // router.StaticFileFS("favicon.ico", "./resources/favicon.ico", Dir{".", false})
 // Gin by default user: gin.Dir()
 func (group *RouterGroup) StaticFileFS(relativePath, filepath string, fs http.FileSystem) IRoutes {
-	return group.staticFileHandler(relativePath, func(c *Context) {
+	return group.staticFileHandler(relativePath, func(c *Context) error {
 		c.FileFromFS(filepath, fs)
+		return nil
 	})
 }
 
@@ -206,7 +208,7 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 	absolutePath := group.calculateAbsolutePath(relativePath)
 	fileServer := http.StripPrefix(absolutePath, http.FileServer(fs))
 
-	return func(c *Context) {
+	return func(c *Context) error {
 		if _, noListing := fs.(*onlyFilesFS); noListing {
 			c.Writer.WriteHeader(http.StatusNotFound)
 		}
@@ -219,11 +221,12 @@ func (group *RouterGroup) createStaticHandler(relativePath string, fs http.FileS
 			c.handlers = group.engine.noRoute
 			// Reset index
 			c.index = -1
-			return
+			return nil
 		}
 		f.Close()
 
 		fileServer.ServeHTTP(c.Writer, c.Request)
+		return nil
 	}
 }
 

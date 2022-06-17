@@ -41,7 +41,7 @@ var defaultTrustedCIDRs = []*net.IPNet{
 }
 
 // HandlerFunc defines the handler used by gin middleware as return value.
-type HandlerFunc func(*Context)
+type HandlerFunc func(*Context) error
 
 // HandlersChain defines a HandlerFunc slice.
 type HandlersChain []HandlerFunc
