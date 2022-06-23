@@ -26,6 +26,7 @@ import (
 	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/gin-gonic/gin/render"
+	`github.com/mcuadros/go-defaults`
 )
 
 // Content-Type MIME of the most common data formats.
@@ -624,6 +625,8 @@ func (c *Context) Bind(obj any) error {
 		c.Request.Form[param.Key] = []string{param.Value}
 	}
 
+	defaults.SetDefaults(obj)
+
 	return bind(c.Request, obj)
 }
 
@@ -849,6 +852,12 @@ func (c *Context) Status(code int) {
 	c.Writer.WriteHeader(code)
 }
 
+// NoContent sets the HTTP response code to 204.
+func (c *Context) NoContent() error {
+	c.Writer.WriteHeader(http.StatusNoContent)
+	return nil
+}
+
 // Header is an intelligent shortcut for c.Writer.Header().Set(key, value).
 // It writes a header in the response.
 // If value == "", this method removes the header `c.Writer.Header().Del(key)`
@@ -959,8 +968,9 @@ func (c *Context) JSONP(code int, obj any) {
 
 // JSON serializes the given struct as JSON into the response body.
 // It also sets the Content-Type as "application/json".
-func (c *Context) JSON(code int, obj any) {
+func (c *Context) JSON(code int, obj any) error {
 	c.Render(code, render.JSON{Data: obj})
+	return nil
 }
 
 // AsciiJSON serializes the given struct as JSON into the response body with unicode to ASCII string.
