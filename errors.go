@@ -35,7 +35,7 @@ type Error struct {
 	Err     error
 	Type    ErrorType
 	Meta    any
-	Massage string
+	Message string
 }
 
 type errorMsgs []*Error
@@ -83,8 +83,8 @@ func (msg *Error) MarshalJSON() ([]byte, error) {
 
 // Error implements the error interface.
 func (msg Error) Error() string {
-	if msg.Massage != "" {
-		return msg.Massage
+	if msg.Message != "" {
+		return msg.Message
 	} else {
 		return msg.Err.Error()
 	}
