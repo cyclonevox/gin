@@ -1482,7 +1482,7 @@ func ErrorHandle(c *Context) error {
 			c.JSON(http.StatusInternalServerError, &Error{
 				Type: 9999,
 				Err:  errors.New("服务器内部错误"),
-				Meta: e.Error(),
+				Meta: err.Error(),
 			})
 		}
 

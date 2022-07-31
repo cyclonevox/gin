@@ -171,7 +171,12 @@ func (a errorMsgs) String() string {
 	}
 	var buffer strings.Builder
 	for i, msg := range a {
-		fmt.Fprintf(&buffer, "Error #%02d: %s\n", i+1, msg.Err)
+		if msg.Err != nil {
+			fmt.Fprintf(&buffer, "Error #%02d: %s\n", i+1, msg.Err)
+		} else {
+			fmt.Fprintf(&buffer, "Error #%02d: %s\n", i+1, msg.Message)
+		}
+
 		if msg.Meta != nil {
 			fmt.Fprintf(&buffer, "     Meta: %v\n", msg.Meta)
 		}
