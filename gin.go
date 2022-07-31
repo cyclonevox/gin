@@ -212,7 +212,7 @@ func New() *Engine {
 func Default() *Engine {
 	debugPrintWARNINGDefault()
 	engine := New()
-	engine.Use(Logger(), Recovery())
+	engine.Use(Logger(), Recovery(), ErrorHandle)
 	return engine
 }
 

@@ -5,8 +5,8 @@
 package gin
 
 import (
-	`encoding`
-	`encoding/json`
+	"encoding"
+	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -17,16 +17,18 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	`reflect`
-	`strconv`
+	"reflect"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/cyclonevox/validatorx"
 	"github.com/gin-contrib/sse"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/gin-gonic/gin/render"
-	`github.com/mcuadros/go-defaults`
+	"github.com/go-playground/validator/v10"
+	"github.com/mcuadros/go-defaults"
 )
 
 // Content-Type MIME of the most common data formats.
@@ -1453,4 +1455,39 @@ func setFloatField(value string, bitSize int, field reflect.Value) error {
 	}
 
 	return err
+}
+
+// ErrorHandle 错误处理中间件，应作为gin框架的全局中间件使用
+func ErrorHandle(c *Context) error {
+	c.Next()
+	for _, err := range c.Errors {
+		c.Abort()
+
+		switch e := err.Err.(type) {
+		case *validator.ValidationErrors:
+			c.JSON(http.StatusBadRequest, &Error{
+				Type: 9998,
+				Err:  errors.New("数据验证错误"),
+				Meta: validatorx.I18n(c.GetHeader("Accept-Language"), *e),
+			})
+
+		case validator.ValidationErrors:
+			c.JSON(http.StatusBadRequest, &Error{
+				Type: 9998,
+				Err:  errors.New("数据验证错误"),
+				Meta: validatorx.I18n(c.GetHeader("Accept-Language"), e),
+			})
+
+		default:
+			c.JSON(http.StatusInternalServerError, &Error{
+				Type: 9999,
+				Err:  errors.New("服务器内部错误"),
+				Meta: e.Error(),
+			})
+		}
+
+		break
+	}
+
+	return nil
 }

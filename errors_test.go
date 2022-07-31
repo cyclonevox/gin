@@ -22,10 +22,10 @@ func TestError(t *testing.T) {
 	assert.Equal(t, err.Error(), baseError.Error())
 	assert.Equal(t, H{"error": baseError.Error()}, err.JSON())
 
-	assert.Equal(t, err.SetType(ErrorTypePublic), err)
+	assert.Equal(t, err.SetCode(ErrorTypePublic), err)
 	assert.Equal(t, ErrorTypePublic, err.Type)
 
-	assert.Equal(t, err.SetMeta("some data"), err)
+	assert.Equal(t, err.SetData("some data"), err)
 	assert.Equal(t, "some data", err.Meta)
 	assert.Equal(t, H{
 		"error": baseError.Error(),
@@ -35,7 +35,7 @@ func TestError(t *testing.T) {
 	jsonBytes, _ := json.Marshal(err)
 	assert.Equal(t, "{\"error\":\"test error\",\"meta\":\"some data\"}", string(jsonBytes))
 
-	err.SetMeta(H{ // nolint: errcheck
+	err.SetData(H{ // nolint: errcheck
 		"status": "200",
 		"data":   "some data",
 	})
@@ -45,7 +45,7 @@ func TestError(t *testing.T) {
 		"data":   "some data",
 	}, err.JSON())
 
-	err.SetMeta(H{ // nolint: errcheck
+	err.SetData(H{ // nolint: errcheck
 		"error":  "custom error",
 		"status": "200",
 		"data":   "some data",
@@ -60,7 +60,7 @@ func TestError(t *testing.T) {
 		status string
 		data   string
 	}
-	err.SetMeta(customError{status: "200", data: "other data"}) // nolint: errcheck
+	err.SetData(customError{status: "200", data: "other data"}) // nolint: errcheck
 	assert.Equal(t, customError{status: "200", data: "other data"}, err.JSON())
 }
 

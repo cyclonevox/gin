@@ -8,9 +8,9 @@
 package binding
 
 import (
-	`net/http`
+	"net/http"
 
-	`github.com/go-playground/validator/v10`
+	"github.com/go-playground/validator/v10"
 )
 
 // Content-Type MIME of the most common data formats.

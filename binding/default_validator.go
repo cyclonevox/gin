@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/cyclonevox/validatorx"
 	"github.com/go-playground/validator/v10"
 )
 
@@ -91,7 +92,7 @@ func (v *defaultValidator) Engine() any {
 
 func (v *defaultValidator) lazyinit() {
 	if v.validate == nil {
-		v.validate = validator.New()
+		v.validate = validatorx.New()
 	}
 }
 

@@ -32,9 +32,10 @@ const (
 
 // Error represents a error's specification.
 type Error struct {
-	Err  error
-	Type ErrorType
-	Meta any
+	Err     error
+	Type    ErrorType
+	Meta    any
+	Massage string
 }
 
 type errorMsgs []*Error
@@ -82,7 +83,12 @@ func (msg *Error) MarshalJSON() ([]byte, error) {
 
 // Error implements the error interface.
 func (msg Error) Error() string {
-	return msg.Err.Error()
+	if msg.Massage != "" {
+		return msg.Massage
+	} else {
+		return msg.Err.Error()
+	}
+
 }
 
 // IsType judges one error.
